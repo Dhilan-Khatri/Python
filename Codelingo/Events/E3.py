@@ -1,0 +1,16 @@
+from tkinter import *
+from tkinter import messagebox
+window=Tk()
+window.geometry("300x300")
+#window.withdraw()
+messagebox.showinfo("Infomation", "This is infomation message")
+messagebox.showerror("Error", "This is a error message")
+answer=messagebox.askquestion("Question", "Do you like python")
+print(answer)
+ok=messagebox.askokcancel("Confirm", "Do you want to continue")
+print(ok)
+yesno=messagebox.askyesno("Yes or No", "Are you a student")
+print(yesno)
+retry=messagebox.askretrycancel("Retry", "Do you want to retry")
+print(retry)
+window.mainloop()
