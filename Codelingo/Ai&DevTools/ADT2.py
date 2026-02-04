@@ -1,6 +1,6 @@
 import colorama
 from colorama import Fore, Style
-
+#from textblob import textBlob
 colorama.init(autoreset=True)
 print(f"{Fore.CYAN} Welcome to Sentiment Spy{Style.RESET_ALL}")
 username=input(f"{Fore.GREEN} Input Your Username {Style.RESET_ALL}").strip()
