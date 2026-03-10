@@ -1,4 +1,6 @@
 import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 
 cascade=cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_frontalface_default.xml")
 cap=cv2.VideoCapture(0)
@@ -13,12 +15,25 @@ else:
             break
         gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         faces=cascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=7,minSize=(30,30))
+
         for (x,y,w,h) in faces:
             cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
         font=cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(frame, f"People Count: {len(faces)}",(10,30),font,1,(0,144,223),2,cv2.LINE_4)
         cv2.imshow("Face Detection (Press q to Quit)", frame)
-        if cv2.waitKey(1) & 0xFF ==ord("q"):
+        if cv2.waitKey(1) & 0xFF==ord("b"):
+            brighterImage=cv2.convertScaleAbs(frame, alpha=1.0, beta=50)
+            cv2.destroyAllWindows()
+            cv2.imshow("Brighter Image", brighterImage)
+        if cv2.waitKey(1) & 0xFF==ord("r"):
+            rotatedImage=cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+            cv2.destroyAllWindows()
+            cv2.imshow("Rotated Image", rotatedImage)
+        if cv2.waitKey(1) & 0xFF==ord("c"):
+            croppedImage=frame[100:300,200:400]
+            cv2.destroyAllWindows()
+            cv2.imshow("Cropped Image", croppedImage)
+        if cv2.waitKey(1) & 0xFF==ord("q"):
             break
 cap.release()
 cv2.destroyAllWindows()
