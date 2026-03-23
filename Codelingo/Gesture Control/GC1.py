@@ -19,7 +19,9 @@ def detectGesture(handLandMarks):
         if landMarks[tipIDs[i]].y<landMarks[pipIDs[i]].y:
             extended+=1
     if extended>=4:
-        return "Open"
+        return "Open Fist"
+    elif extended>=1 and extended<=4:
+        return "Half Fist"
     elif extended<=1:
         return "Closed Fist"
     else:
@@ -42,13 +44,16 @@ while True:
             for tipid in fingertipsIDs:
                 l=handlandmarks.landmark[tipid]
                 x,y=int(l.x*w), int(l.y*h)
-                cv2.circle(frame,(x,y),10,(255,0,255),cv2.FILL)
-                cv2.putText(frame,str(tipid),(x-5,y-15))
+                cv2.circle(frame,(x,y),10,(255,0,255),cv2.FILLED)
+                cv2.putText(frame,str(tipid),(x-5,y-15),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,255,0),2)
             wrist=handlandmarks.landmark[0]
             xWrist,yWrist=int(wrist.x*w), int(wrist.y*h)
             cv2.putText(frame,f"{handLabel} hands",(xWrist-40,yWrist+30),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),2)
-    statusColor=(0,255,0) if gesture in ["Open", "Closed Fist"] else (0,165,265)
-    cv2.putText(frame,f"gesture: {gesture}",(10,30),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),2)
+    if gesture == "Open Fist": statusColor = (0, 255, 0)
+    elif gesture == "Half Fist": statusColor = (255,0,0)
+    elif gesture == "Closed Fist": statusColor = (0, 0,255)
+    else: statusColor = (0, 0, 0)
+    cv2.putText(frame,f"Gesture: {gesture}",(10,30),cv2.FONT_HERSHEY_SIMPLEX,0.7,(statusColor),2)
     cv2.imshow("Hand Gesture Detected", frame)
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
