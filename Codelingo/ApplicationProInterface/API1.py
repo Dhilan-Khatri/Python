@@ -1,7 +1,7 @@
 import requests
 from colorama import init, Fore
 init(autoreset=True)
-def getRandomJokes():
+def getRandomFact():
     site="https://catfact.ninja/fact"
     response=requests.get(site)
     if response.status_code==200:
@@ -18,5 +18,5 @@ while True:
         print(Fore.CYAN+f"Goodbye {name}, See You Again Soon")
         break
     else:
-        joke=getRandomJokes()
+        joke=getRandomFact()
         print(Fore.GREEN+joke)
