@@ -10,12 +10,12 @@ def message(message):
     r=requests.post(apiURL,headers=headers,json=payload,timeout=30)
     if not r.ok:
         raise RuntimeError(f"hf Error: {r.status_code} : {r.text}")
-    prediction=r.json()
-    prediction=list((prediction["labels"],prediction["score"]))
-    return max(prediction,key=lambda x:x["score"])
+    data=r.json()
+    prediction=list(zip(data["labels"],data["scores"]))
+    return sorted(prediction,key=lambda x:x[1],reverse=True)
 def show(message, results):
     label, score=results[0]
-    print("\n"+"=",*60)
+    print("\n"+"="*60)
     print("Spam v Safe Classifier")
     print("="*60)
     print(f"Message: {message}")
