@@ -1,8 +1,8 @@
 import requests
-from config import hf_api4_key
+from config import hf_api5_key
 model_ID="facebook/bart-large-mnli"
 apiURL=f"https://router.huggingface.co/hf-inference/models/{model_ID}"
-headers={"Authorization": f"Bearer {hf_api4_key}"}
+headers={"Authorization": f"Bearer {hf_api5_key}"}
 topics = ["Spam", "Safe"]
 
 def message(message):
