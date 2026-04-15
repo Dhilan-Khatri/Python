@@ -15,7 +15,7 @@ demo=[
 tok=lambda s:" | ".join(s.split())
 bar=lambda s:"█" * int(s*10) + "░" * (10 - int(s*10))
 clean=lambda t:[w for w in(re.sub(r"[^a-z0-9']+","",x.lower())for x in t.split())if w]
-num=lambda t:set(re.findall(r"\d+(?:\.\d+)?0",t))
+num=lambda t:set(re.findall(r"\d+(?:\.\d+)?",t))
 hasAny=lambda t,arr:any(a in set(clean(t))for a in arr)
 def hf(q1,q2):
     r=requests.post(API,headers=HEAD, json={"inputs":{"source_sentence":q1,"sentences":[q2]}},timeout=30)
@@ -23,18 +23,18 @@ def hf(q1,q2):
         raise RuntimeError(r.text)
     data=r.json()
     if isinstance(data,dict):
-        raise RuntimeError(data.get("Error", str(data)))
+        raise RuntimeError(data.get("error", str(data)))
     return float(data[0])
 def smartScoreing(base,q1,q2,strong):
-    w1={w for w in clean(q1) if len(w)>4};w2={w for w in clean(q2) if len(w)>4}
+    w1={w for w in clean(q1) if len(w)>=4};w2={w for w in clean(q2) if len(w)>=4}
     jac=len(w1&w2)/max(1,len(w1|w2))
     boost=(0.04 if len(strong)>=2 else 0)+(0.03 if jac>=0.20 else 0)+(0.05 if jac>=0.35 else 0)
     negA=["not","no","never","without","can't","cant","cannot","don't","dont","won't","wont","n't"]
     oppA=[("increase","decrease"),("bigger","smaller"),("more","less"),("add","remove"),("open","close"),("enable","disable")]
     numpen=0.10 if (num(q1)and num(q2)and num(q1)!=num(q2)) else 0
     negpen=0.12 if hasAny(q1,negA)!=hasAny(q2,negA) else 0
-    opppen=0.12 if any((hasAny(q1,[a])and hasAny(q2[b]))or (hasAny(q1,[b]) and hasAny(q2,[a]))for a,b in oppA) else 0
-    return max(0.0, min(base+boost-numpen-negpen-opppen))
+    opppen=0.12 if any((hasAny(q1,[a])and hasAny(q2,[b]))or (hasAny(q1,[b]) and hasAny(q2,[a]))for a,b in oppA) else 0
+    return max(0.0, min(1.0,base+boost-numpen-negpen-opppen))
 def label(s): return "✅ DUPLICATE" if s>=TH else ("🤔 CLOSE MATCH" if s>=TH-0.05 else "❌ DIFFERENT")
 def show_result(s):
     print(f"\n🎯 Result of Similarity: {round(s*100,1)}% [{bar(s)}]  →  {label(s)}")

@@ -11,7 +11,12 @@ def message(message):
     if not r.ok:
         raise RuntimeError(f"hf Error: {r.status_code} : {r.text}")
     data=r.json()
-    prediction=list(zip(data["labels"],data["scores"]))
+    if isinstance(data,dict):
+        prediction=list(zip(data["labels"],data["scores"]))
+    elif isinstance(data,list):
+        prediction=[(item["label"],item["score"])for item in data]
+    else:
+        raise RuntimeError(f"Unexpected Responce {data}")
     return sorted(prediction,key=lambda x:x[1],reverse=True)
 def show(message, results):
     label, score=results[0]
@@ -24,7 +29,7 @@ def show(message, results):
         print(" Do Not Click Any Links Or Give Info!")
     else:
         print("Looks Safe, but Proceed With Caution.")
-    print("=",*60)
+    print("="*60)
 def main():
     print("Welcome, enter a Message and I'll see if it is Spam or Not")
     print("Type 'exit' to Stop.")
