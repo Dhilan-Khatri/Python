@@ -1,11 +1,9 @@
 import requests
 from config import hf_api6_key
 
-model_ID = "cardiffnlp/twitter-roberta-base-sentiment"
+model_ID = ""
 apiURL = f"https://router.huggingface.co/hf-inference/models/{model_ID}"
 headers = {"Authorization": f"Bearer {hf_api6_key}"}
-
-bar = lambda s: "█" * int(s*10) + "░" * (10 - int(s*10))
 
 def sentiment(text):
     r = requests.post(apiURL, headers=headers, json={"inputs": text}, timeout=30)
@@ -24,7 +22,7 @@ def sentiment(text):
     score = result["score"]
     return label, score
 def show(label, score):
-    print(f"\nSentiment: {label} [{bar(score)}]")
+    print(f"\nSentiment: {label}")
     print(f"Confidence: {round(score*100,1)}%")
 def result(label):
     if label == "POSITIVE":
