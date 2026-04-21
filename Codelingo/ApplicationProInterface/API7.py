@@ -1,51 +1,43 @@
 import requests
-from config import hf_api6_key
+from config import hf_api7_key
 
-model_ID = ""
+model_ID = "sentence-transformers/all-MiniLM-L6-v2"
 apiURL = f"https://router.huggingface.co/hf-inference/models/{model_ID}"
-headers = {"Authorization": f"Bearer {hf_api6_key}"}
+headers = {"Authorization": f"Bearer {hf_api7_key}"}
 
-def sentiment(text):
-    r = requests.post(apiURL, headers=headers, json={"inputs": text}, timeout=30)
+def sentiment(a:str,b:str)->float:
+    payload={"inputs":{"source_sentence": a, "sentences": [b]}}
+    r=requests.post(apiURL,headers=headers,json=payload,timeout=30)
     if not r.ok:
-        raise RuntimeError(r.text)
-    data = r.json()
+        raise RuntimeError(f"HF Error: {r.status_code}: {r.text}")
+    data=r.json()
     if isinstance(data, dict):
         raise RuntimeError(data.get("error", str(data)))
-    result = data[0]
-    labels = {
-        "label1": "NEGATIVE",
-        "label2": "NEUTRAL",
-        "label3": "POSITIVE"
-    }
-    label = labels[result["label"]]
-    score = result["score"]
-    return label, score
-def show(label, score):
-    print(f"\nSentiment: {label}")
-    print(f"Confidence: {round(score*100,1)}%")
-def result(label):
-    if label == "POSITIVE":
-        print("This sentence is positive.")
-    elif label == "NEGATIVE":
-        print("This sentence is negative.")
-    else:
-        print("This sentence is neutral.")
+    return round(data[0],1)
+def bar(score:float)->str:
+    blocks=int((score*100)//10)
+    return "█" * blocks + "░" * (10 - blocks)
+def choice(score:float)->str:
+    if score>=0.8:
+        return "Very Similar"
+    if score>=0.65:
+        return "Close"
+    else: return "Different"
 def main():
-    print("Sentiment Analyzer")
-    print("Type a sentence and see its sentiment.")
-    print("Type 'exit' to quit.\n")
+    print("Welcome to, The Similarity Checker")
     while True:
-        text = input("Your Sentence: ").strip()
-        if text.lower() == "exit":
-            print("Bye! ")
+        print("Press enter to continue, or type 'quit' to quit.")
+        user=input("User: ").strip().lower()
+        if user =="exit":
+            print("Goodbye!")
             break
-        if not text:
-            continue
-        try:
-            label, score = sentiment(text)
-            show(label, score)
-            result(label)
-        except Exception as e:
-            print("\n Oops!", e, "\n")
+        else:
+            q1=input("Sentence 1: ").strip()
+            q2=input("Sentence 2: ").strip()
+            if not q1 or not q2:
+                print("Please Type In BOTH Sentences.")
+                continue
+            sim=sentiment(q1,q2)
+            percent=round(sim*100,1)
+            print(f"The Similarity is: {percent}% [{bar(sim)}], {choice(sim)}")
 main()
