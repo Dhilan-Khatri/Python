@@ -26,7 +26,7 @@ def choice(score:float)->str:
 def main():
     print("Welcome to, The Similarity Checker")
     while True:
-        print("Press enter to continue, or type 'quit' to quit.")
+        print("Press enter to continue, or type 'exit' to quit.")
         user=input("User: ").strip().lower()
         if user =="exit":
             print("Goodbye!")
