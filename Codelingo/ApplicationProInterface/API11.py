@@ -63,7 +63,7 @@ else:
         print(Fore.BLUE+Style.NORMAL+"Loading Summary...")
     summary=summerizeText(userText,minlen,maxlen,modelName=modelChoice)
     if summary:
-        print(Fore.GREEN+Style.NORMAL+f"Summary For {userName}, ")
+        print(Fore.GREEN+Style.BRIGHT+f"Summary For {userName}, ")
         print(Fore.GREEN+Style.NORMAL+summary)
     else:
         print(Fore.RED+Style.BRIGHT+"Failed To Generate Summary!")
