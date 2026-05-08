@@ -2,10 +2,11 @@ import os, base64, requests, time, re
 from config import hf_api17_key
 API_URL = "https://router.huggingface.co/v1/chat/completions"
 HEADERS = {"Authorization": f"Bearer {hf_api17_key}","Content-Type": "application/json"}
-MODELS = ["Qwen/Qwen3-VL-8B-Instruct:together",
+MODELS = [
+    "Qwen/Qwen3-VL-8B-Instruct:together",
     "Qwen/Qwen3-VL-32B-Instruct:together",
     "Qwen/Qwen2.5-VL-32B-Instruct:together",
-    "Qwen/Qwen2-VL-7B-Instruct:together"]
+    "Qwen/Qwen2-VL-7B-Instruct:together",]
 def dataURL(b:bytes)-> str:
     return "data:image/jpeg;base64," + base64.b64encode(b).decode("utf-8")
 def error(r:requests.Response)->str:
@@ -22,13 +23,13 @@ def box(title:str,lines:list[str],icon:str):
     for x in lines:
         print(f"| {x.ljust(w)} |")
     print("|"+"-"*(w+2)+"|\n")
-def caption(imgFile): 
+def genCaption(imgFile): 
     try:
         with open(imgFile,"rb") as f:
             image=f.read()
     except Exception as e:
         box("File Error",[f"could not load: {imgFile}",f"reason: {e}", " "])
-        return
+        return None, str(e)
     basePayload={
         "messages":[{
             "role":"user",
@@ -37,7 +38,7 @@ def caption(imgFile):
                 {"type":"image_url","image_url":{"url":dataURL(image)}},
             ],
         }],
-        "max_tokens":512,
+        "max_tokens":60,
         "temperature":0.2
         }
     last=None
@@ -47,23 +48,23 @@ def caption(imgFile):
             r=requests.post(API_URL,headers=HEADERS,json=payload,timeout=120)
         except requests.RequestException as e:
             last = f"Request Fail {e}"
-            break
+            continue
         if r.status_code==503:
             time.sleep(3)
             continue 
         if r.status_code!=200:
             last=error(r)
-            break
+            continue
         try:
             d=r.json()
         except Exception:
             last="nonjson response recived from api"
-            break
+            continue
         raw=((d.get("choices")or[{}])[0].get("message",{}).get("content") or "").strip()
-        cCaption = re.sub(r"<think>.*?</think>","",raw,flags=re.DOTALL).strip()
-        if cCaption:
-            box("image caption generated",[f"image:{imgFile}","caption:",f"{cCaption}"]," ")
-            return cCaption, None
+        caption = re.sub(r"<think>.*?</think>","",raw,flags=re.DOTALL).strip()
+        if caption:
+            box("image caption generated",[f"image:{imgFile}","caption:",f"{caption}"]," ")
+            return caption, None
         last="No caption found"
         break
     box("caption failed",[f"image:{imgFile}", f"error:{last or 'unknown error'}"]," ")
@@ -81,7 +82,7 @@ def main():
     for img_name in image_files:
         img_path = os.path.join(folder_path, img_name)
         print(f"\nProcessing; {img_path}")
-        cap, err = caption(img_path)
+        cap, err = genCaption(img_path)
         if err:
             print(f"[API Error] {err} for '{img_name}'")
             continue
