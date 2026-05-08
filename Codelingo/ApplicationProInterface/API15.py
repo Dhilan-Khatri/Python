@@ -28,8 +28,8 @@ def hfInPaint(prompt:str,image_bytes:bytes):
             "prompt": (
                 prompt
                 + ". Restore old photo naturally. "
-                "Keep original style, lighting, and identity. "
-                "Only fix damaged areas. No modern/art style.")}}
+                "Keep original style. "
+                "Only fix damaged areas.")}}
     try:
         r=requests.post(API_URL,headers=HEADERS,json=payload,timeout=120)
         if r.status_code==200:
