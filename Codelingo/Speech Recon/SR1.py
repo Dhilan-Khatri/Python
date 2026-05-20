@@ -10,13 +10,13 @@ from speech_recognition import AudioData
 
 stopEvent=threading.Event()
 def waitForEnter():
-    print(f"Press Enter To Stop Recording")
+    input(f"Press Enter To Stop Recording")
     stopEvent.set()
 def spinner():
     chars='|/-\\'
     i=0
     while not stopEvent.is_set():
-        sys.stdout.wright(f"\r Recording... {chars  [i%4]}")
+        sys.stdout.write(f"\r Recording... {chars  [i%4]}")
         sys.stdout.flush()
         i=i+1
         time.sleep(0.1)
