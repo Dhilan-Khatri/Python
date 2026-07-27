@@ -13,7 +13,7 @@ def run():
         print(f"Zero-Shot Learning: ")
         print(f"Response: {generateResponse(ZrShot, temperature=0.3, maxToken=1024)}")
         print(70*"=")
-        OneShot=f"""
+        UnShot=f"""
                 example:
                 Category: Fruit
                 Item: Apple
@@ -25,12 +25,12 @@ def run():
                 Answer:"""
         print(70*"=")
         print("One-Shot Learning")
-        print(f"Response: {generateResponse(OneShot, temperature=0.3, maxToken=1024)}")
+        print(f"Response: {generateResponse(UnShot, temperature=0.3, maxToken=1024)}")
         print(70*"=")
-        FewShot=f"""example1:
+        FwShot=f"""example1:
                     Category: Fruit
                     Item: Apple
-                    Answer: Yes, Apple is a Fruit
+                    Answer: Yes, a Apple is a Fruit
 
                     example2:
                     Category: City 
@@ -40,7 +40,7 @@ def run():
                     example3:
                     Category: Vehicle 
                     Item: Rose
-                    Answer: No, Rose is not a Vechicle
+                    Answer: No, a Rose is not a Vechicle
 
                     example4:
                     Category: Color 
@@ -50,7 +50,12 @@ def run():
                     example5:
                     Category: Vegetable
                     Item: Strawberry
-                    Answer: No, Strawberry is not a Vegetable
+                    Answer: No, a Strawberry is not a Vegetable
+                    
+                    example6:
+                    Category: Animal
+                    Item: Lion
+                    Answer: Yes, a Lion is not a Vegetable
                     
                     Now you try:
                     Category: {category}
@@ -58,34 +63,21 @@ def run():
                     Answer:"""
         print(70*"=")
         print("Few-Shot Learning")
-        print(f"Response: {generateResponse(FewShot, temperature=0.3, maxToken=1024)}")
+        print(f"Response: {generateResponse(FwShot, temperature=0.3, maxToken=1024)}")
         print(70*"=")
         CrPrompt=f"""Write a 1 Sentence story about the given word
         example1:
-        Word: Moon
-        Story: The Moon winked at the lovers as they were together
+        Word: Computer
+        Story: The Computer sighed as another cup of coffee was spilled on its keyboard.
+        
+        example2: 
+        Word: Clock
+        Story: The Clock ticked loudly, racing against the students as they frantically finished their exam.
         
         Word: {item}
         Story:"""
         print(70*"=")
         print("Creative-Shot Learning")
         print(f"Response: {generateResponse(CrPrompt, temperature=0.3, maxToken=1024)}")
-        print(70*"=")
-        FwShot=f"""Example1:
-        Category: Devices
-        Item: Laptop
-        Answer: Yes, a Laptop is a Device
-
-        Example2:
-                Category: Devices
-                Item: Headphones
-                Answer: Yes, a Headphone is a Device
-
-        Category: {category}
-        Item: {item}
-        Answer: """
-        print(70*"=")
-        print("Few1-Shot Learning")
-        print(f"Response: {generateResponse(FwShot, temperature=0.3, maxToken=1024)}")
         print(70*"=")
 run()
