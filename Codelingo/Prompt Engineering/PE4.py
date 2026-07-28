@@ -36,11 +36,17 @@ def roleBasedPrompt():
         print("Please Enter A Category Or Item To Proceed.")
         return
     teachPrompt=f"You Are A Teacher Explaing {item} from {category} in simple terms."
-    expertPrompt=f"Your are a expert in {category}. Explaing {item} in a technical manor."
+    expertPrompt=f"You are a expert in {category}. Explaing {item} in a technical manor."
+    businessPrompt=f"You are a business leader, explain {item}, from {category} on its market impact."
+    peerPrompt=f"Your are a fellow student explaining {item}, from {category} to a classmate, use relateable terms."
     teachResponse=generateResponse(teachPrompt, temperature=0.3, maxToken=1024)
     expertResponse=generateResponse(expertPrompt, temperature=0.3, maxToken=1024)
+    businessResponse=generateResponse(businessPrompt, temperature=0.3, maxToken=1024)
+    peerResponse=generateResponse(peerPrompt, temperature=0.3, maxToken=1024)
     print(f"\nTeacher-Like Response: \n{teachResponse}")
     print(f"\nExpert-Like Response: \n{expertResponse}")
+    print(f"\nBusiness Leader-Like Response: \n{businessResponse}")
+    print(f"\nPeer Student-Like Response: \n{peerResponse}")
 def main():
     print("Welcome To ReEnforcement Learning and Role-Based Prompt Activities.")
     while True:
