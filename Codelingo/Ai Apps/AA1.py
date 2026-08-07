@@ -43,7 +43,7 @@ def roles(role:str,question:str)->str:
 def main():
     st.title("Ai Teaching Assistance")
     st.write("Welcome, you can ask me anything.")
-    st.session_state.setdefault("conversation", [])
+    st.session_state.setdefault("history", [])
     role = st.selectbox("Select AI Role", ["Teacher", "Expert", "Student"])
     user_input = st.text_input("Enter your question here: ")
     c1, c2 = st.columns([1, 1])
@@ -56,16 +56,16 @@ def main():
             prompt = roles(role, user_input.strip())
             with st.spinner("Generating..."):
                 answer = generateResponse(prompt, temperature=0.3, max_tokens=1024)
-            st.session_state.conversation.append({"role": role, "question": user_input.strip(), "answer": answer})
+            st.session_state.history.append({"role": role, "question": user_input.strip(), "answer": answer})
             st.rerun()
         else:
             st.warning("Please enter a question.")
     if clear:
-        st.session_state.conversation = []
+        st.session_state.history = []
         st.rerun()
-    if st.session_state.conversation:
+    if st.session_state.history:
         export_text = ""
-        for i, chat in enumerate(st.session_state.conversation, 1):
+        for i, chat in enumerate(st.session_state.history, 1):
             export_text += f"Q{i} ({chat['role']}): {chat['question']}\nA{i}: {chat['answer']}\n\n"
         st.download_button(
             "Export History",
@@ -73,7 +73,7 @@ def main():
             "AITeachingAssistantConversation.txt",
             "text/plain",)
         st.markdown("History")
-        for i, chat in enumerate(st.session_state.conversation, 1):
+        for i, chat in enumerate(st.session_state.history, 1):
             st.markdown(f"You: {chat['question']}")
             st.markdown(f"AI ({chat['role']}): {chat['answer']}")
 main()
