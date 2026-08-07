@@ -34,16 +34,18 @@ def completeAns(question:str,maxRounds:int=2)->str:
     return answer
 def roles(role:str,question:str)->str:
     if role== "Teacher":
-        return f"You are a teacher. Explainj clearly with simple words and 3-5 points. \n{question}"
+        return f"You are a teacher. Explain clearly with simple words and 3-5 points. \n{question}"
     if role == "Expert":
-        return f"You are an expert. Give a detailed, technical explanation with examples.\n: {question}"
-    return f"You are a friendly helper. Answer warmly and simply with a short example.\n: {question}"
+        return f"You are an expert. Explain with a elaborate, technical explanation with examples.\n: {question}"
+    if role =="Student":
+        return f"You are a fellow student. Explain simply with a short example.\n: {question}"
+    else: return f"You are an Ai Teaching Assistance. Answer this question. \n{question}"
 def main():
     st.title("Ai Teaching Assistance")
     st.write("Welcome, you can ask me anything.")
     st.session_state.setdefault("conversation", [])
 
-    role = st.selectbox("Select AI Role", ["Teacher", "Expert"])
+    role = st.selectbox("Select AI Role", ["Teacher", "Expert", "Student"])
     user_input = st.text_input("Enter your question here: ")
     c1, c2 = st.columns([1, 1])
     with c1:
@@ -67,9 +69,9 @@ def main():
         for i, chat in enumerate(st.session_state.conversation, 1):
             export_text += f"Q{i} ({chat['role']}): {chat['question']}\nA{i}: {chat['answer']}\n\n"
         st.download_button(
-            "Export Chat History",
+            "Export History",
             io.BytesIO(export_text.encode("utf-8")),
-            "Enhanced_AI_Teaching_Assistant_Conversation.txt",
+            "AITeachingAssistantConversation.txt",
             "text/plain",)
         st.markdown("History")
         for i, chat in enumerate(st.session_state.conversation, 1):
