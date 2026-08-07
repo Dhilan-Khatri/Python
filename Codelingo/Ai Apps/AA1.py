@@ -53,7 +53,7 @@ def main():
         clear = st.button("Clear History")
     if ask:
         if user_input.strip():
-            prompt = role(role, user_input.strip())
+            prompt = roles(role, user_input.strip())
             with st.spinner("Generating..."):
                 answer = generateResponse(prompt, temperature=0.3, max_tokens=1024)
             st.session_state.conversation.append({"role": role, "question": user_input.strip(), "answer": answer})
