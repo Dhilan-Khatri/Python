@@ -44,7 +44,6 @@ def main():
     st.title("Ai Teaching Assistance")
     st.write("Welcome, you can ask me anything.")
     st.session_state.setdefault("conversation", [])
-
     role = st.selectbox("Select AI Role", ["Teacher", "Expert", "Student"])
     user_input = st.text_input("Enter your question here: ")
     c1, c2 = st.columns([1, 1])
