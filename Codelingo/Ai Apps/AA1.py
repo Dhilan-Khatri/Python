@@ -40,40 +40,39 @@ def roles(role:str,question:str)->str:
     if role =="Student":
         return f"You are a fellow student. Explain simply with a short example.\n: {question}"
     else: return f"You are an Ai Teaching Assistance. Answer this question. \n{question}"
+def export(history):
+    text="".join([f"Q{i}: {h["question"]}\nA{i}: {h["answer"]}\n\n" for i,h in enumerate(history,1)])
+    return io.BytesIO(text.encode("utf-8"))
 def main():
     st.title("Ai Teaching Assistance")
     st.write("Welcome, you can ask me anything.")
     st.session_state.setdefault("history", [])
+
     role = st.selectbox("Select AI Role", ["Teacher", "Expert", "Student"])
-    user_input = st.text_input("Enter your question here: ")
-    c1, c2 = st.columns([1, 1])
-    with c1:
-        ask = st.button("Ask")
-    with c2:
-        clear = st.button("Clear History")
-    if ask:
-        if user_input.strip():
-            prompt = roles(role, user_input.strip())
+    userInput = st.text_input("Enter your question here: ")
+    colClear,colExport=st.columns([1,2])
+    with colClear:
+        if st.button("Clear History"):
+            st.session_state.history=[]
+            st.rerun()
+    with colExport:
+        if st.session_state.history:
+            st.download_button(
+                label="Export History",
+                data=export(st.session_state.history),
+                file_name="AiTeachingAssistanceHistory.txt",
+                mime="text/plain")
+    if st.button("Ask"):
+        if userInput.strip():
+            prompt = roles(role, userInput.strip())
             with st.spinner("Generating..."):
-                answer = generateResponse(prompt, temperature=0.3, max_tokens=1024)
-            st.session_state.history.append({"role": role, "question": user_input.strip(), "answer": answer})
+                answer = generateResponse(prompt, temperature=0.3, maxToken=1024)
+            st.session_state.history.append({"role": role, "question": userInput.strip(), "answer": answer})
             st.rerun()
         else:
             st.warning("Please enter a question.")
-    if clear:
-        st.session_state.history = []
-        st.rerun()
-    if st.session_state.history:
-        export_text = ""
-        for i, chat in enumerate(st.session_state.history, 1):
-            export_text += f"Q{i} ({chat['role']}): {chat['question']}\nA{i}: {chat['answer']}\n\n"
-        st.download_button(
-            "Export History",
-            io.BytesIO(export_text.encode("utf-8")),
-            "AITeachingAssistantConversation.txt",
-            "text/plain",)
-        st.markdown("History")
-        for i, chat in enumerate(st.session_state.history, 1):
-            st.markdown(f"You: {chat['question']}")
-            st.markdown(f"AI ({chat['role']}): {chat['answer']}")
+    st.markdown("History")
+    for i, h in enumerate(st.session_state.history, 1):
+        st.markdown(f"You {i}: {h['question']}")
+        st.markdown(f"AI {i}: {h['answer']}")
 main()

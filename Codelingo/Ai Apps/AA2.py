@@ -16,10 +16,11 @@ def setup():
     st.set_page_config(page_title="Ai Teaching Assistance",layout="centered")
     st.title("Ai Teaching Assistance")
     st.write("Welcome, Ask Me About Various Subjects\n And I'll Provide Answers.")
-    st.session_state.setdefault("History",[])
+    st.session_state.setdefault("history",[])
+    userInput=st.text_input("Enter Your Question Here: ")
     colClear,colExport=st.columns([1,2])
     with colClear:
-        if st.button("🧹 Clear Conversation"):
+        if st.button("Clear History"):
             st.session_state.history=[]
             st.rerun()
     with colExport:
@@ -29,7 +30,6 @@ def setup():
                 data=export(st.session_state.history),
                 file_name="AiTeachingAssistanceHistory.txt",
                 mime="text/plain")
-    userInput=st.text_input("Enter Your Question Here: ")
     if st.button("Ask"):
         question=userInput.strip()
         if question:
@@ -39,10 +39,10 @@ def setup():
             st.rerun()
         else:
             st.warning("Please Enter A Question")
-    st.markdown("history")
+    st.markdown("History")
     st.markdown(css,unsafe_allow_html=True)
     cards=[]
     for i,h in enumerate(st.session_state.history,1):
-        cards.append(f"<div class='qacard'><div class='q'>Q{i}:{h["Question"]}</div></div>")
+        cards.append(f"<div class='qacard'><div class='q'>Q{i}:{h["Question"]}</div><div class='a'>{h["Answer"]}</div></div>")
     st.markdown('<div class="historywrap">'+"".join(cards)+"</div>",unsafe_allow_html=True)
 setup()
