@@ -4,9 +4,9 @@ import streamlit as st
 css="""
 <style>
 .historywrap{max-height:420px; overflow-y:auto;padding-right:6px;}
-.uacard{border:1px solid white; background:black; border-radius:10px; padding:14px 16px; margin:10px 0; box-shadow:0 1px 2px red;}
+.qacard{border:1px solid white; background:black; border-radius:10px; padding:14px 16px; margin:10px 0; box-shadow:0 1px 2px red;}
 .q{font-weight:700; color:yellow; margin-bottom:8px;}
-.a{white-space:pre-wrap; color:blue: line-height:1.5;}
+.a{white-space:pre-wrap; color:blue; line-height:1.5;}
 </style>
 """
 def export(history):
@@ -18,11 +18,11 @@ def setup():
     st.write("Welcome, Ask Me About Various Subjects\n And I'll Provide Answers.")
     st.session_state.setdefault("History",[])
     colClear,colExport=st.columns([1,2])
-    while colClear:
+    with colClear:
         if st.button("🧹 Clear Conversation"):
             st.session_state.history=[]
             st.rerun()
-    while colExport:
+    with colExport:
         if st.session_state.history:
             st.download_button(
                 label="Export History",
@@ -39,7 +39,7 @@ def setup():
             st.rerun()
         else:
             st.warning("Please Enter A Question")
-    st.markdown("History")
+    st.markdown("history")
     st.markdown(css,unsafe_allow_html=True)
     cards=[]
     for i,h in enumerate(st.session_state.history,1):
