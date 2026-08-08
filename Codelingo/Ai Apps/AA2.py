@@ -38,11 +38,11 @@ def setup():
             st.session_state.history.insert(0,{"Question":question,"Answer":ans})
             st.rerun()
         else:
-            st.warning("Please Enter A Question")
+            st.warning("Please Enter A Question.")
     st.markdown("History")
     st.markdown(css,unsafe_allow_html=True)
     cards=[]
     for i,h in enumerate(st.session_state.history,1):
-        cards.append(f"<div class='qacard'><div class='q'>Q{i}:{h["Question"]}</div><div class='a'>{h["Answer"]}</div></div>")
+        cards.append(f"<div class='qacard'><div class='q'>Q{i}: {h["Question"]}</div><div class='a'>{h["Answer"]}</div></div>")
     st.markdown('<div class="historywrap">'+"".join(cards)+"</div>",unsafe_allow_html=True)
 setup()
