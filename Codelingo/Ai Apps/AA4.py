@@ -1,4 +1,4 @@
-from groq import generateResponse
+from hf import generateResponse
 from io import BytesIO
 from huggingface_hub import InferenceClient
 import streamlit as st
@@ -37,11 +37,11 @@ def generateImage(prompt:str):
                 return imageClient.text_to_image(prompt=prompt,model=MODEL_ID),None
             except Exception as e2:
                 message=str(e2)
-            if any(x in message for x in ["402","Payment Required","pre-paidcredits"]):
-                return None, "Image Backend Requires Credit Or Model Not Avaible."+message
-            if "404" in message or "Not Found" in message:
-                return None, "Model Not Served In This Provider"+message
-            return None, "Error During Image Generation"+message
+        if any(x in message for x in ["402","Payment Required","pre-paidcredits"]):
+            return None, "Image Backend Requires Credit Or Model Not Avaible."+message
+        if "404" in message or "Not Found" in message:
+            return None, "Model Not Served In This Provider"+message
+        return None, "Error During Image Generation"+message
 def main():
     st.set_page_config(page_title="AI Image Generator", layout="centered")
     st.title("AI Image Generator")
@@ -56,13 +56,13 @@ def main():
             return
         rawCheck=checkFilterAPI(raw)
         if not rawCheck.get("ok"):
-            st.error(f"Prompt Block {rawCheck.get("reason", "Unsafe Prompt")}")
+            st.error(f"Prompt Block #1 {rawCheck.get("reason", "Unsafe Prompt")}")
             return
         with st.spinner("Enchancing Your Prompt..."):
             finalPrompt=enchancePrompt(raw)
-        enchanceCheck=checkFilterAPI(finalPrompt)
+        enchanceCheck=checkFilterAPI(raw)
         if not enchanceCheck.get("ok"):
-            st.error(f"Prompt Block {rawCheck.get("reason", "Unsafe Prompt")}")
+            st.error(f"Prompt Block #2 {rawCheck.get("reason", "Unsafe Prompt")}")
             return
         st.markdown("Enhanced Prompt")
         st.code(finalPrompt)
