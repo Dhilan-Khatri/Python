@@ -8,10 +8,10 @@ Solve with clear step-by-step reasoning, correct notation, and a final answer.
 Verify when possible; mention an alternative method briefly if relevant."""
 CHAT_CSS = """
 <style>
-.wrap {max-height: 520px; overflow-y: auto; padding-right: 6px;}
-.card{border:1px solid #e6e6e6;background:#fff;border-radius:10px;padding:14px 16px;margin:10px 0;
+.wrap {max-height: 650px; overflow-y: auto; padding-right: 6px;}
+.card{border:2px solid #e6e6e6;background:#fff;border-radius:10px;padding:18px 18px;margin:10px 0;
 box-shadow:0 1px 2px rgba(0,0,0,0.04);}
-.q{font-weight:700;color:#0a6ebd;margin-bottom:8px;}
+.q{font-weight:700;color:#2E7D32;margin-bottom:8px;}
 .meta{display:inline-block;background:#FF9800;color:#fff;padding:2px 8px;border-radius:12px;font-size:12px;margin-left:8px}
 .a{white-space:pre-wrap;color:#333;line-height:1.5;}
 </style>"""
@@ -57,6 +57,7 @@ def imgAnswer(prompt:str):
         return None, "Error During Image Generation"+message
 def aiTeach():
     st.title("Ai Teaching Asistance")
+    st.info("...")
     st.session_state.setdefault("History_ATA",[])
     c1,c2=st.columns([1,2])
     if c1.button("Clear",key="c1_ATA"):
@@ -66,12 +67,12 @@ def aiTeach():
         c2.download_button("Export History", exportTxT(st.session_state.History_ATA),"ATAhistory.txt","text/plain")
     q=st.text_area("Enter Any Question That You Might Have:", key="q_ATA", placeholder="Enter any questions about any subject. \n" \
     "   If there is a concept you find confusing, let's clear it up right now.")
-    if st.button("Ask",key="a_ATA"):
+    if st.button("Ask For Answer",key="a_ATA"):
         if not q.strip():
             st.warning("Enter A Question!")
         else:
             with st.spinner("Generating Answer"):
-                st.session_state.History_ATA.append({"Question":q.strip(),"Answer":teachingAnswer(q.strip())})
+                st.session_state.History_ATA.insert(0,{"Question":q.strip(),"Answer":teachingAnswer(q.strip())})
             st.rerun()
     if not st.session_state.History_ATA:
         return
@@ -82,6 +83,7 @@ def aiTeach():
     st.markdown(html+"</div>",unsafe_allow_html=True)
 def math():
     st.title("Math Mastermind")
+    st.info("...")
     st.session_state.setdefault("History_MM",[])
     st.session_state.setdefault("k_MM",0)
     c1,c2=st.columns([1,2])
@@ -96,7 +98,7 @@ def math():
                        "  -Probability: 'p(sum=7 with 2 dice)\n  -Geometry: 'Area of triangle (0,0),(3,4),(6,0)'\n" \
                        "  -Statistics 'Standard deviation of [10, 20, 30, 40]'\n  -Trigonometry 'Simplify tan(x) * cos(x)'")
         a,b=st.columns([3,1])
-        go=a.form_submit_button("Solve",use_container_width=True)
+        go=a.form_submit_button("Solve Problem",use_container_width=True)
         lvl=b.selectbox("Level", ["Basic", "Intermediate", "Advanced", "Expert"], index=1)
         if go:
             if not q.strip():
@@ -117,10 +119,11 @@ def math():
 def image():
     st.set_page_config(page_title="AI Image Generator", layout="centered")
     st.title("AI Image Generator")
+    st.info("...")
     st.info("Flow: Enter A Prompt -> Enchance Prompt -> Check Using Deployed Safety Ai -> Generate Image")
     with st.form("image_form"):
         raw=st.text_area("Image Describtion: ", height=120, placeholder="Photorealistic close-up of a majestic red fox in a sunlit autumn forest.")
-        submit=st.form_submit_button("Generate Image")
+        submit=st.form_submit_button("Generate Your Image")
     if submit:
         raw=raw.strip()
         if not raw:
